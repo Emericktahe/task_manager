@@ -36,4 +36,11 @@ void main() {
       throwsA(isA<TaskNotFoundException>()),
     );
   });
+
+  test("Tache dupliqué", () {
+    expect(
+      () => throw DuplicateTaskException("tache dupliqué"),
+      throwsA(isA<DuplicateTaskException>()),
+    );
+  });
 }

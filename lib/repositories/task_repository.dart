@@ -1,3 +1,4 @@
+import 'package:task_manager/exceptions/task_exception.dart';
 import 'package:task_manager/interfaces/repository.dart';
 import 'package:task_manager/models/priority.dart';
 import 'package:task_manager/models/task.dart';
@@ -9,12 +10,11 @@ class TaskRepository implements Repository<Task> {
 
   @override
   Future<void> add(Task data) async {
-    try {
-      _tasks.add(data);
-      await _storage.save(_tasks);
-    } catch (e) {
-      throw Exception('Failed to add task: $e');
+    if (_tasks.any((t) => t.title == data.title)) {
+      throw DuplicateTaskException("Tache en double");
     }
+    _tasks.add(data);
+    await _storage.save(_tasks);
   }
 
   @override
@@ -23,14 +23,11 @@ class TaskRepository implements Repository<Task> {
       final data = await _storage.load();
       List<Task> tasks = data.map((item) {
         return UrgentTask(
-
           id: item['id'],
           title: item['title'],
           priority: Priority.values[item['priority']],
           isCompleted: item['isCompleted'],
           deadline: DateTime.tryParse(item['deadline'] ?? ''),
-
-      
         );
       }).toList();
       return tasks;

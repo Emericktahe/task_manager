@@ -14,6 +14,8 @@ void main() async {
     print("2. Voir toutes les tâches");
     print("3. Supprimer une tâche");
     print("4. Marquer une tâche comme terminée");
+    print("5. Trier par priorité");
+    print("6. Trier par date");
     print("0. Quitter");
 
     choix = int.parse(stdin.readLineSync()!);
@@ -37,8 +39,18 @@ void main() async {
           print('Priorité invalide. Veuillez entrer 1, 2 ou 3.');
         }
         bool isCompleted = false;
-        DateTime? deadline = DateTime.now();
+        DateTime? deadline;
+        print("Voulez vous une date limite ? (o/n)");
+        String choixDate = stdin.readLineSync()!.toLowerCase();
 
+        if (choixDate == "o") {
+          print('Entrer la date limite (YYYY-MM-DD) : ');
+          String deadlineString = stdin.readLineSync()!;
+          deadline = DateTime.parse(deadlineString);
+        } else {
+          print('Aucune date limite ajoutée.');
+          deadline = null;
+        }
         await service.addTask(
           UrgentTask(
             id: id,
@@ -72,6 +84,22 @@ void main() async {
         final completeId = stdin.readLineSync()!;
         await service.completeTask(completeId);
         print("Tache marquée comme terminée avec succès !");
+        break;
+      case 5:
+        print("Tâches triées par priorité :");
+        await service.sortByPriority().then((tasks) {
+          for (var task in tasks) {
+            print(task.display());
+          }
+        });
+        break;
+      case 6:
+        print("Tâches triées par date :");
+        await service.sortByDate().then((tasks) {
+          for (var task in tasks) {
+            print(task.display());
+          }
+        });
         break;
       case 0:
         print("Au revoir !");

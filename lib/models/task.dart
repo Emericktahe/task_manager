@@ -16,6 +16,8 @@ abstract class Task {
   });
 
   String display();
+
+  Map<String, dynamic> toJson();
 }
 
 class UrgentTask extends Task {
@@ -29,6 +31,7 @@ class UrgentTask extends Task {
   @override
   String display() => 'Urgent Task: $title (Priority: $priority)';
 
+  @override
   Map<String, dynamic> toJson() => {
     'id': id,
     'title': title,
