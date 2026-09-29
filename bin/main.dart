@@ -30,12 +30,13 @@ void main() async {
           'Entrer le numéro de la priorité (1: Urgent, 2: Normal, 3: Faible) : ',
         );
         int choixPriority = int.tryParse(stdin.readLineSync().toString()) ?? 0;
+        Priority choixPriorityFinal = Priority.medium;
         if (choixPriority == 1) {
-          choixPriority = Priority.high.index;
+          choixPriorityFinal = Priority.high;
         } else if (choixPriority == 2) {
-          choixPriority = Priority.medium.index;
+          choixPriorityFinal = Priority.medium;
         } else if (choixPriority == 3) {
-          choixPriority = Priority.low.index;
+          choixPriorityFinal = Priority.low;
         } else {
           print('Priorité invalide. Veuillez entrer 1, 2 ou 3.');
         }
@@ -60,7 +61,7 @@ void main() async {
           UrgentTask(
             id: id,
             title: title!,
-            priority: Priority.values[choixPriority],
+            priority: choixPriorityFinal,
             isCompleted: isCompleted,
             deadline: deadline,
           ),

@@ -40,3 +40,24 @@ class UrgentTask extends Task {
     'deadline': deadline?.toIso8601String(),
   };
 }
+
+class NormalTask extends Task {
+  NormalTask({
+    required super.id,
+    required super.title,
+    required super.priority,
+    super.isCompleted,
+    super.deadline,
+  });
+  @override
+  String display() => 'Normal Task: $title (Priority: $priority)';
+
+  @override
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'title': title,
+    'priority': priority.index,
+    'isCompleted': isCompleted,
+    'deadline': deadline?.toIso8601String(),
+  };
+}

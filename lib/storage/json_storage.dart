@@ -3,7 +3,7 @@ import 'dart:io';
 
 class JsonStorage {
   List data = [];
-  final String filePath = 'lib/data/tasks.json';
+  final String filePath = 'tasks.json';
 
   Future<void> save(List data) async {
     final file = File(filePath);
