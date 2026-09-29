@@ -12,13 +12,21 @@ class TaskRepository implements Repository<Task> {
     _tasks.clear();
     final data = await _storage.load();
     final List<Task> tasks = data.map((item) {
-      return UrgentTask(
-        id: item['id'],
-        title: item['title'],
-        priority: Priority.values[item['priority']],
-        isCompleted: item['isCompleted'],
-        deadline: DateTime.tryParse(item['deadline'] ?? ''),
-      );
+      return item['type'] == 'urgent'
+          ? UrgentTask(
+              id: item['id'],
+              title: item['title'],
+              priority: Priority.values[item['priority']],
+              isCompleted: item['isCompleted'],
+              deadline: DateTime.tryParse(item['deadline'] ?? ''),
+            )
+          : NormalTask(
+              id: item['id'],
+              title: item['title'],
+              priority: Priority.values[item['priority']],
+              isCompleted: item['isCompleted'],
+              deadline: DateTime.tryParse(item['deadline'] ?? ''),
+            );
     }).toList();
     _tasks.addAll(tasks);
   }

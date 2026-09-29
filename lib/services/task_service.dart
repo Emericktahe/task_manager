@@ -1,3 +1,4 @@
+import 'package:task_manager/exceptions/task_exception.dart';
 import 'package:task_manager/repositories/task_repository.dart';
 
 import '../models/task.dart';
@@ -18,14 +19,19 @@ class TaskService {
   }
 
   Future<void> deleteTask(String id) async {
+    final tasks = await taskRepository.getAll();
+    if (!tasks.any((t) => t.id == id)) {
+      throw TaskNotFoundException("Tache $id introuvable");
+    }
     await taskRepository.delete(id);
   }
 
   Future<void> completeTask(String id) async {
     final tasks = await taskRepository.getAll();
-    final task = tasks.firstWhere((t) => t.id == id);
-    task.isCompleted = true;
-    await taskRepository.update(task);
+    final index = tasks.indexWhere((t) => t.id == id);
+    if (index == -1) throw TaskNotFoundException("Tache $id introuvable");
+    tasks[index].isCompleted = true;
+    await taskRepository.update(tasks[index]);
   }
 
   Future<List<Task>> sortByPriority() async {

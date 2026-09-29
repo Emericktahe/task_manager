@@ -57,16 +57,45 @@ void main() async {
           print('Aucune date limite ajoutée.');
           deadline = null;
         }
-        await service.addTask(
-          UrgentTask(
-            id: id,
-            title: title!,
-            priority: choixPriorityFinal,
-            isCompleted: isCompleted,
-            deadline: deadline,
-          ),
-        );
-        print("Tache AJoutée avec succès !");
+        if (title == null || title.isEmpty) {
+          print('Le titre ne peut pas être vide.');
+          break;
+        }
+        if (choixPriorityFinal == Priority.medium) {
+          await service.addTask(
+            NormalTask(
+              id: id,
+              title: title,
+              priority: Priority.medium,
+              isCompleted: isCompleted,
+              deadline: deadline,
+            ),
+          );
+          print("Tache AJoutée avec succès !");
+        } else if (choixPriorityFinal == Priority.high) {
+          await service.addTask(
+            UrgentTask(
+              id: id,
+              title: title,
+              priority: Priority.high,
+              isCompleted: isCompleted,
+              deadline: deadline,
+            ),
+          );
+          print("Tache AJoutée avec succès !");
+        } else {
+          await service.addTask(
+            NormalTask(
+              id: id,
+              title: title,
+              priority: Priority.low,
+              isCompleted: isCompleted,
+              deadline: deadline,
+            ),
+          );
+          print("Tache AJoutée avec succès !");
+        }
+
         break;
 
       case 2:
