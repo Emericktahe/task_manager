@@ -4,6 +4,11 @@ import '../models/task.dart';
 
 class TaskService {
   TaskRepository taskRepository = TaskRepository();
+
+  Future<void> init() async {
+    await taskRepository.init();
+  }
+
   Future<void> addTask(Task task) async {
     await taskRepository.add(task);
   }
@@ -31,7 +36,15 @@ class TaskService {
 
   Future<List<Task>> sortByDate() async {
     final tasks = await taskRepository.getAll();
-    tasks.sort((a, b) => b.deadline!.compareTo(a.deadline!));
+    tasks.sort((a, b) {
+      if (a.deadline == null) {
+        return 1;
+      } else if (b.deadline == null) {
+        return -1;
+      } else {
+        return a.deadline!.compareTo(b.deadline!);
+      }
+    });
     return tasks;
   }
 }

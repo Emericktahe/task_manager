@@ -1,13 +1,14 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:task_manager/models/priority.dart';
 import 'package:task_manager/models/task.dart';
 import 'package:task_manager/services/task_service.dart';
+import 'package:uuid/uuid.dart';
 
 void main() async {
   final service = TaskService();
   int choix = 0;
+  await service.taskRepository.init();
   print("Bienvenue dans ton gestionnaire de tâches");
   do {
     print("1. AJouter une tâche");
@@ -18,17 +19,17 @@ void main() async {
     print("6. Trier par date");
     print("0. Quitter");
 
-    choix = int.parse(stdin.readLineSync()!);
+    choix = int.tryParse(stdin.readLineSync().toString()) ?? 0;
 
     switch (choix) {
       case 1:
-        final String id = Random().nextInt(10).toString();
+        final String id = Uuid().v4();
         print('Entrer le titre de la tâche : ');
         final title = stdin.readLineSync();
         print(
           'Entrer le numéro de la priorité (1: Urgent, 2: Normal, 3: Faible) : ',
         );
-        int choixPriority = int.parse(stdin.readLineSync()!);
+        int choixPriority = int.tryParse(stdin.readLineSync().toString()) ?? 0;
         if (choixPriority == 1) {
           choixPriority = Priority.high.index;
         } else if (choixPriority == 2) {
@@ -46,7 +47,11 @@ void main() async {
         if (choixDate == "o") {
           print('Entrer la date limite (YYYY-MM-DD) : ');
           String deadlineString = stdin.readLineSync()!;
-          deadline = DateTime.parse(deadlineString);
+          deadline = DateTime.tryParse(deadlineString);
+          if (deadline == null) {
+            print('Date invalide, aucune date limite ajoutée.');
+            break;
+          }
         } else {
           print('Aucune date limite ajoutée.');
           deadline = null;

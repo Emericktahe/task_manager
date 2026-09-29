@@ -8,6 +8,21 @@ class TaskRepository implements Repository<Task> {
   final JsonStorage _storage = JsonStorage();
   final List<Task> _tasks = [];
 
+  Future<void> init() async {
+    _tasks.clear();
+    final data = await _storage.load();
+    final List<Task> tasks = data.map((item) {
+      return UrgentTask(
+        id: item['id'],
+        title: item['title'],
+        priority: Priority.values[item['priority']],
+        isCompleted: item['isCompleted'],
+        deadline: DateTime.tryParse(item['deadline'] ?? ''),
+      );
+    }).toList();
+    _tasks.addAll(tasks);
+  }
+
   @override
   Future<void> add(Task data) async {
     if (_tasks.any((t) => t.title == data.title)) {
@@ -20,17 +35,7 @@ class TaskRepository implements Repository<Task> {
   @override
   Future<List<Task>> getAll() async {
     try {
-      final data = await _storage.load();
-      List<Task> tasks = data.map((item) {
-        return UrgentTask(
-          id: item['id'],
-          title: item['title'],
-          priority: Priority.values[item['priority']],
-          isCompleted: item['isCompleted'],
-          deadline: DateTime.tryParse(item['deadline'] ?? ''),
-        );
-      }).toList();
-      return tasks;
+      return _tasks;
     } catch (e) {
       throw Exception('Failed to load tasks: $e');
     }
